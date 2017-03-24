@@ -1,0 +1,5 @@
+<root>
+    <item name='com.amazon.speech.ui.SimpleCard void setContent(java.lang.String)'>
+        <annotation name='java.lang.Deprecated'/>
+    </item>
+</root>

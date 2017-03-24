@@ -35,7 +35,7 @@ public class HelloWorldSpeechlet implements Speechlet {
 
     public static String name = "Player";
 
-    private String[] ROASTS_MAXWELL = new String[] {"This is a test roast."};
+    private String[] ROASTS_MAXWELL = new String[] {};
     private String[] ROASTS_KAREEM = new String[] {};
     private String[] ROASTS_BRYCE = new String[] {"If I wanted to talk to a penguin, I would go to Antarctica.", "You are a piece of ass cancer.", "Nice try getting me to roast you, you aren't even worth my time."};
     private String[] ROASTS_COLE = new String[] {};
