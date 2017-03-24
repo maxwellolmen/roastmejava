@@ -155,6 +155,18 @@ public class HelloWorldSpeechlet implements Speechlet {
 
     private SpeechletResponse getRoastMeResponse() {
         String speechText = getRoast(name);
+
+        SimpleCard card = new SimpleCard();
+        card.setTitle("RoastMeResponse");
+        card.setContent(speechText);
+
+        PlainTextOutputSpeech speech = new PlainTextOutputSpeech();
+        speech.setText(speechText);
+
+        Reprompt reprompt = new Reprompt();
+        reprompt.setOutputSpeech(speech);
+
+        return SpeechletResponse.newAskResponse(speech, reprompt, card);
     }
 
     /**
@@ -207,5 +219,7 @@ public class HelloWorldSpeechlet implements Speechlet {
         } else {
 
         }
+
+        return "";
     }
 }
