@@ -221,8 +221,6 @@ public class HelloWorldSpeechlet implements Speechlet {
         } else {
             return getFromList(ROASTS_OTHER);
         }
-
-        return "";
     }
 
     private String getFromList(String[] strings) {
