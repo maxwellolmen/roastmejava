@@ -6,6 +6,8 @@ scorekeeper\storage\ScoreKeeperUserDataItem$ScoreKeeperGameDataMarshaller.class
 scorekeeper\storage\ScoreKeeperGame.class
 scorekeeper\storage\ScoreKeeperGame$ScoreComparator.class
 session\SessionSpeechlet.class
+yahtzee\YahtzeeSpeechletRequestStreamHandler.class
+yahtzee\YahtzeeScores.class
 savvyconsumer\SavvyConsumerSpeechlet.class
 scorekeeper\ScoreKeeperManager.class
 tidepooler\TidePoolerSpeechlet$HighTideValues.class
@@ -24,6 +26,7 @@ helloworld\HelloWorldSpeechlet.class
 savvyconsumer\SavvyConsumerSpeechletRequestStreamHandler.class
 session\SessionSpeechletRequestStreamHandler.class
 historybuff\HistoryBuffSpeechletRequestStreamHandler.class
+yahtzee\YahtzeeSpeechlet.class
 tidepooler\TidePoolerSpeechletRequestStreamHandler.class
 tidepooler\AlexaDateUtil.class
 tidepooler\TidePoolerSpeechlet$CityDateValues.class

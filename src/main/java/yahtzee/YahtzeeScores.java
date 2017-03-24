@@ -38,49 +38,49 @@ public class YahtzeeScores {
 
             lastAdd = requestAces(dice);
             turnsLeft--;
-        } else if (play.equals("twos")) {
+        } else if (play.equals("2s")) {
             if (twos != -1) {
                 return false;
             }
 
             lastAdd = requestTwos(dice);
             turnsLeft--;
-        } else if (play.equals("threes")) {
+        } else if (play.equals("3s")) {
             if (threes != -1) {
                 return false;
             }
 
             lastAdd = requestThrees(dice);
             turnsLeft--;
-        } else if (play.equals("fours")) {
+        } else if (play.equals("4s")) {
             if (fours != -1) {
                 return false;
             }
 
             lastAdd = requestFours(dice);
             turnsLeft--;
-        } else if (play.equals("fives")) {
+        } else if (play.equals("5s")) {
             if (fives != -1) {
                 return false;
             }
 
             lastAdd = requestFives(dice);
             turnsLeft--;
-        } else if (play.equals("sixes")) {
+        } else if (play.equals("6s")) {
             if (sixes != -1) {
                 return false;
             }
 
             lastAdd = requestSixes(dice);
             turnsLeft--;
-        } else if (play.equals("three of a kind")) {
+        } else if (play.equals("3 of a kind")) {
             if (threeofakind != -1) {
                 return false;
             }
 
             lastAdd = requestThreeOfAKind(dice, type);
             turnsLeft--;
-        } else if (play.equals("four of a kind")) {
+        } else if (play.equals("4 of a kind")) {
             if (fourofakind != -1) {
                 return false;
             }
@@ -117,12 +117,13 @@ public class YahtzeeScores {
             turnsLeft--;
         } else if (play.equals("yahtzee")) {
             if (hasYahtzee(dice)) {
-                addYahtzee();
+                lastAdd = addYahtzee();
             } else {
                 if (yahtzees >= 50) {
-                    lastAdd = 0;
+                    return false;
                 } else {
                     lastAdd = yahtzees = 0;
+                    turnsLeft--;
                 }
             }
         }

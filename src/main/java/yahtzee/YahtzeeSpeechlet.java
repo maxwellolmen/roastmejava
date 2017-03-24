@@ -34,8 +34,8 @@ public class YahtzeeSpeechlet implements Speechlet {
 
     public static YahtzeeScores[] scorePlayers;
 
-    public static List<String> PLAYS = Arrays.asList(new String[] {"aces", "twos", "threes", "fours", "fives", "sixes", "three of a kind", "four of a kind", "full house", "small straight", "large straight", "chance", "yahtzee"});
-    public static List<String> DIETHS = Arrays.asList(new String[] {"first", "second", "third", "fourth", "fifth"});
+    public static List<String> PLAYS = Arrays.asList(new String[] {"aces", "2s", "3s", "4s", "5s", "6s", "3 of a kind", "4 of a kind", "full house", "small straight", "large straight", "chance", "yahtzee"});
+    public static List<String> DIETHS = Arrays.asList(new String[] {"1st", "second", "3rd", "4th", "5th"});
 
     @Override
     public void onSessionStarted(final SessionStartedRequest request, final Session session)
@@ -74,6 +74,8 @@ public class YahtzeeSpeechlet implements Speechlet {
             return getSaveDieResponse(request.getIntent());
         } else if ("PlayDiceIntent".equals(intentName)) {
             return getPlayDiceResponse(request.getIntent());
+        } else if ("ListPlaysIntent".equals(intentName)) {
+            return getListPlaysResponse();
         } else {
             throw new SpeechletException("Invalid Intent");
         }
@@ -95,7 +97,6 @@ public class YahtzeeSpeechlet implements Speechlet {
         }
 
         rollPending = false;
-        scorePlayers[turn].rolls--;
     }
 
     /**
@@ -141,8 +142,8 @@ public class YahtzeeSpeechlet implements Speechlet {
             return SpeechletResponse.newAskResponse(speech, reprompt, card);
         }
 
-        if (players < 2 || players > 8) {
-            String speechText = "You must have between two and eight players.";
+        if (players < 2 || players > 10) {
+            String speechText = "You must have between two and ten players.";
 
             SimpleCard card = new SimpleCard();
             card.setTitle("InvalidAmountMessage");
@@ -168,6 +169,8 @@ public class YahtzeeSpeechlet implements Speechlet {
 
         Reprompt reprompt = new Reprompt();
         reprompt.setOutputSpeech(speech);
+
+        inGame = false;
 
         return SpeechletResponse.newAskResponse(speech, reprompt, card);
     }
@@ -198,10 +201,11 @@ public class YahtzeeSpeechlet implements Speechlet {
 
         rollPending = true;
 
+        turn = 0;
         dice = new int[] {-1, -1, -1, -1, -1};
         savedDice = new boolean[] {false, false, false, false, false};
 
-        String speechText = "Let's go! Let me explain the basic rules. For every turn, you must say, roll. I will tell you your dice in order, and you may tell me to save a die by saying, save the third die. You may also tell me, repeat the dice, if you missed them the first time. Once you're ready to make a play with your dice, say, play full house. I will tell you what you scored from the play, and your turn will end. Have fun! Player one, your turn.";
+        String speechText = "Let's go! Let me explain the basic rules. For every turn, you must say, roll. I will tell you your dice in order, and you may tell me to save a die by saying, save the third die. You may also tell me, repeat the dice, if you missed them the first time. Once you're ready to make a play with your dice, say, play full house. I will tell you what you scored from the play, and your turn will end. You may also ask me, what have I played? Have fun! Player one, your turn.";
 
         SimpleCard card = new SimpleCard();
         card.setTitle("GameIntroductionMessage");
@@ -251,7 +255,7 @@ public class YahtzeeSpeechlet implements Speechlet {
 
         rollDice();
 
-        String speechText = "You now have " + dice[0] + ", " + dice[1] + ", " + dice[2] + ", " + dice[3] + ", " + dice[4] + ", and " + dice[5] + ".";
+        String speechText = "You now have " + numberToString(Integer.toString(dice[0])) + ", " + numberToString(Integer.toString(dice[1])) + ", " + numberToString(Integer.toString(dice[2])) + ", " + numberToString(Integer.toString(dice[3])) + ", and " + numberToString(Integer.toString(dice[4])) + ".";
 
         SimpleCard card = new SimpleCard();
         card.setTitle("DiceMessage");
@@ -299,7 +303,7 @@ public class YahtzeeSpeechlet implements Speechlet {
             return SpeechletResponse.newAskResponse(speech, reprompt, card);
         }
 
-        String speechText = "You now have " + dice[0] + ", " + dice[1] + ", " + dice[2] + ", " + dice[3] + ", " + dice[4] + ", and " + dice[5] + ".";
+        String speechText = "You now have " + numberToString(Integer.toString(dice[0])) + ", " + numberToString(Integer.toString(dice[1])) + ", " + numberToString(Integer.toString(dice[2])) + ", " + numberToString(Integer.toString(dice[3])) + ", and " + numberToString(Integer.toString(dice[4])) + ".";
 
         SimpleCard card = new SimpleCard();
         card.setTitle("DiceMessage");
@@ -363,7 +367,7 @@ public class YahtzeeSpeechlet implements Speechlet {
             return SpeechletResponse.newAskResponse(speech, reprompt, card);
         }
 
-        int dieth = diethFromString(intent.getSlot("Dieth").getValue());
+        int dieth = diethFromString(intent.getSlot("Dieth").getValue()) - 1;
 
         savedDice[dieth] = !savedDice[dieth];
 
@@ -433,7 +437,7 @@ public class YahtzeeSpeechlet implements Speechlet {
 
         String play = intent.getSlot("Play").getValue();
 
-        if ((play.equals("three of a kind") || play.equals("four of a kind")) && intent.getSlot("Die") == null) {
+        if ((play.equals("3 of a kind") || play.equals("4 of a kind")) && intent.getSlot("Die").getValue() == null) {
             String speechText = "You must specify the die you'd like to use. For example, play three of a kind with threes.";
 
             SimpleCard card = new SimpleCard();
@@ -451,7 +455,7 @@ public class YahtzeeSpeechlet implements Speechlet {
 
         int type = -1;
 
-        if (play.equals("three of a kind") || play.equals("four of a kind")) {
+        if (play.equals("3 of a kind") || play.equals("4 of a kind")) {
             type = stringToType(intent.getSlot("Die").getValue());
 
             if (type == -1) {
@@ -533,18 +537,20 @@ public class YahtzeeSpeechlet implements Speechlet {
         return SpeechletResponse.newAskResponse(speech, reprompt, card);
     }
 
+    private SpeechletResponse
+
     public int stringToType(String string) {
         if (string.equals("aces")) {
             return 1;
-        } else if (string.equals("twos")) {
+        } else if (string.equals("2s")) {
             return 2;
-        } else if (string.equals("threes")) {
+        } else if (string.equals("3s")) {
             return 3;
-        } else if (string.equals("fours")) {
+        } else if (string.equals("4s")) {
             return 4;
-        } else if (string.equals("fives")) {
+        } else if (string.equals("5s")) {
             return 5;
-        } else if (string.equals("sixes")) {
+        } else if (string.equals("6s")) {
             return 6;
         }
 
@@ -552,15 +558,15 @@ public class YahtzeeSpeechlet implements Speechlet {
     }
 
     public int diethFromString(String string) {
-        if (string.equals("first")) {
+        if (string.equals("1st")) {
             return 1;
         } else if (string.equals("second")) {
             return 2;
-        } else if (string.equals("third")) {
+        } else if (string.equals("3rd")) {
             return 3;
-        } else if (string.equals("fourth")) {
+        } else if (string.equals("4th")) {
             return 4;
-        } else if (string.equals("fifth")) {
+        } else if (string.equals("5th")) {
             return 5;
         }
 
@@ -583,7 +589,7 @@ public class YahtzeeSpeechlet implements Speechlet {
         for (int i = 0; i < players; i++) {
             YahtzeeScores scorePlayer = scorePlayers[i];
 
-            String playerSpeech = " Player " + i + ", you " + (scorePlayer.tallyUpperSection() >= 63 ? "did " : "did not ") + "receive the upper section bonus points. Your final score is " + (scorePlayer.tallyUpperSection() + scorePlayer.tallyLowerSection() + scorePlayer.getBonus());
+            String playerSpeech = " Player " + (i + 1) + ", you " + (scorePlayer.tallyUpperSection() >= 63 ? "did " : "did not ") + "receive the upper section bonus points. Your final score is " + (scorePlayer.tallyUpperSection() + scorePlayer.tallyLowerSection() + scorePlayer.getBonus() + ".");
 
             speechText+=playerSpeech;
         }
@@ -604,5 +610,23 @@ public class YahtzeeSpeechlet implements Speechlet {
         sr.setShouldEndSession(true);
 
         return sr;
+    }
+
+    public String numberToString(String number) {
+        if (number.equals("1")) {
+            return "one";
+        } else if (number.equals("2")) {
+            return "two";
+        } else if (number.equals("3")) {
+            return "three";
+        } else if (number.equals("4")) {
+            return "four";
+        } else if (number.equals("5")) {
+            return "five";
+        } else if (number.equals("6")) {
+            return "six";
+        }
+
+        return null;
     }
 }
