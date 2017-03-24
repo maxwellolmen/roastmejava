@@ -25,6 +25,8 @@ import com.amazon.speech.ui.PlainTextOutputSpeech;
 import com.amazon.speech.ui.Reprompt;
 import com.amazon.speech.ui.SimpleCard;
 
+import java.util.Random;
+
 /**
  * This sample shows how to create a simple speechlet for handling speechlet requests.
  */
@@ -33,7 +35,7 @@ public class HelloWorldSpeechlet implements Speechlet {
 
     public static String name = "Player";
 
-    private String[] ROASTS_MAXWELL = new String[] {};
+    private String[] ROASTS_MAXWELL = new String[] {"This is a test roast."};
     private String[] ROASTS_KAREEM = new String[] {};
     private String[] ROASTS_BRYCE = new String[] {"If I wanted to talk to a penguin, I would go to Antarctica.", "You are a piece of ass cancer.", "Nice try getting me to roast you, you aren't even worth my time."};
     private String[] ROASTS_COLE = new String[] {};
@@ -195,31 +197,37 @@ public class HelloWorldSpeechlet implements Speechlet {
 
     private String getRoast(String name) {
         if (name.equals("Maxwell")) {
-
+            return getFromList(ROASTS_MAXWELL);
         } else if (name.equals("Kareem")) {
-
+            return getFromList(ROASTS_KAREEM);
         } else if (name.equals("Bryce")) {
-
+            return getFromList(ROASTS_BRYCE);
         } else if (name.equals("Cole")) {
-
+            return getFromList(ROASTS_COLE);
         } else if (name.equals("Ekaanth")) {
-
+            return getFromList(ROASTS_EKAANTH);
         } else if (name.equals("Cyn-Ean")) {
-
+            return getFromList(ROASTS_CYNEAN);
         } else if (name.equals("Cyn-Wei")) {
-
+            return getFromList(ROASTS_CYNWEI);
         } else if (name.equals("Noah")) {
-
+            return getFromList(ROASTS_NOAH);
         } else if (name.equals("Jack")) {
-
+            return getFromList(ROASTS_JACK);
         } else if (name.equals("Kian")) {
-
+            return getFromList(ROASTS_KIAN);
         } else if (name.equals("Sage")) {
-
+            return getFromList(ROASTS_SAGE);
         } else {
-
+            return getFromList(ROASTS_OTHER);
         }
 
         return "";
+    }
+
+    private String getFromList(String[] strings) {
+        int random = new Random().nextInt(strings.length);
+
+        return strings[random];
     }
 }
